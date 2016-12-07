@@ -16,8 +16,8 @@ def demo():
     x = (mx / 2) * 2
     y = (my / 2) * 2
 
-    new = flsh.PixelFlash(flashes, (x, y))
-    new.flash = flsh.PixelFlash.blue_sweep
+    new = flsh.PixelFlash.get_instance(flashes, (x, y), BLUE, 'gleam')
+    # new.flash = flsh.PixelFlash.blue_sweep
     flashes.append(new)
 
     for p in flashes:
@@ -25,6 +25,7 @@ def demo():
 
     pygame.display.update()
 
+clock = pygame.time.Clock()
 end = False
 while not end:
 
@@ -34,7 +35,9 @@ while not end:
         if event.type in (KEYDOWN, QUIT):
             end = True
 
-    pygame.time.delay(10)
+    clock.tick(FPS)
+    #print clock.get_fps()
 
+print len(flashes)
 pygame.quit()
 exit()
