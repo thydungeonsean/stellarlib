@@ -1,4 +1,6 @@
 import effect.pixel_flash as flsh
+import effect.pop as pop
+import effect.bolt as bolt
 from constants import *
 
 
@@ -16,7 +18,8 @@ def demo():
     x = (mx / 2) * 2
     y = (my / 2) * 2
 
-    new = flsh.PixelFlash.get_instance(flashes, (x, y), BLUE, 'gleam')
+    # new = flsh.PixelFlash.get_instance(flashes, (x, y), BLUE, 'gleam')
+    new = bolt.Bolt(flashes, (x, y), BLUE, 'vec')
     # new.flash = flsh.PixelFlash.blue_sweep
     flashes.append(new)
 
@@ -36,7 +39,7 @@ while not end:
             end = True
 
     clock.tick(FPS)
-    #print clock.get_fps()
+    # print clock.get_fps()
 
 print len(flashes)
 pygame.quit()

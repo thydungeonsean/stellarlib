@@ -1,59 +1,23 @@
 import pixel_flash as flsh
 from constants import *
-from particle import Particle
+from particle_projectile import ParticleProjectile
+import animation_map as ani
 
 
-class Pop(Particle):
+class Pop(ParticleProjectile):
 
-    animation = [[0, 0, 0, 4, 4, 0, 0, 0],
-                 [0, 4, 0, 3, 3, 0, 4, 0],
-                 [0, 0, 3, 2, 2, 3, 0, 0],
-                 [4, 3, 2, 1, 1, 2, 3, 4],
-                 [4, 3, 2, 1, 1, 2, 3, 4],
-                 [0, 0, 3, 2, 2, 3, 0, 0],
-                 [0, 4, 0, 3, 3, 0, 4, 0],
-                 [0, 0, 0, 4, 4, 0, 0, 0]]
-    w = len(animation[0])
-    h = len(animation)
+    def __init__(self, collection, point, color):
 
-    def __init__(self, collection, point):
+        ParticleProjectile.__init__(self, collection, point, color)
 
-        Particle.__init__(self, collection, point)
+        self.ani_map = ani.AnimationMap.get_premade_animation('pop')
+        self.w = self.ani_map.w
+        self.h = self.ani_map.h
 
-        self.tick = 1
+        self.image, self.rect = self.set_image()
 
-        self.flashes = []
+    def get_next_pixel_flash(self, coords):
 
-        self.image = pygame.Surface((scale(Pop.w), scale(Pop.h)))
-        self.rect = self.image.get_rect()
-        self.image.fill(BLACK)
+        new = flsh.PixelFlash.get_instance(self.flashes, coords, self.color, 'flicker')
 
-        self.rect.topleft = self.point
-
-    def draw(self, surface):
-
-        self.add_flashes()
-        self.increment_tick()
-
-        for flash in self.flashes:
-            flash.draw(self.image)
-
-        surface.blit(self.image, self.rect)
-
-        if not self.flashes:
-            self.end()
-
-    def add_flashes(self):
-
-        for y in range(Pop.h):
-            for x in range(Pop.w):
-
-                if Pop.animation[x][y] == self.get_step():
-                    tx = scale(x)
-                    ty = scale(y)
-                    new = flsh.PixelFlash(self.flashes, (tx, ty))
-                    self.flashes.append(new)
-
-    def get_step(self):
-
-        return self.tick/6 + 1
+        return new

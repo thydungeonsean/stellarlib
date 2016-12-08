@@ -6,9 +6,13 @@ screen = pygame.display.get_surface()
 
 test_col = BLUE
 colors = [
-          col.lerp_color(test_col, WHITE, .9),
-          col.lerp_color(test_col, WHITE, .65),
-          col.lerp_color(test_col, WHITE, 0)]
+           test_col,
+           col.lerp_color(test_col, WHITE, .7),
+           test_col
+          ]
+          #col.lerp_color(test_col, WHITE, .9),
+          #col.lerp_color(test_col, WHITE, .65),
+          #col.lerp_color(test_col, WHITE, 0)]
 
 im = []
 

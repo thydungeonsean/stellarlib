@@ -12,8 +12,10 @@ class PixelFlash(Particle):
     @classmethod
     def get_color_sequence(cls, color, seq_type):
         sequences = {
-            'flicker': (c_seq.Flicker, (10, True, True)),
+            'flicker': (c_seq.Flicker, (3, True, True)),
             'gleam': (c_seq.Gleam, (8, True, True)),
+            'pulse': (c_seq.Pulse, (5, True, True)),
+            'trail': (c_seq.Trail, (5, True, True))
         }
         seq = sequences[seq_type][0]
         args = sequences[seq_type][1]
@@ -27,12 +29,19 @@ class PixelFlash(Particle):
         pixel.set_color_sequence(seq)
         return pixel
 
-    def __init__(self, collection, point):
+    def __init__(self, collection, points):
+
+        if isinstance(points, tuple):
+            self.points = [points]
+            point = points
+        elif isinstance(points, list):
+            self.points = points
+            point = points[0]
 
         Particle.__init__(self, collection, point)
 
         self.dot = pygame.Surface((SCALE, SCALE))
-        self.dot.set_colorkey(WHITE)
+        # self.dot.set_colorkey(WHITE)
         self.dot = self.dot.convert()
         self.rect = self.dot.get_rect()
         self.rect.topleft = self.point
@@ -45,7 +54,9 @@ class PixelFlash(Particle):
 
     def draw(self, surface):
 
-        surface.blit(self.dot, self.rect)
+        for point in self.points:
+            self.rect.topleft = point
+            surface.blit(self.dot, self.rect)
 
         self.increment_tick()
         self.set_color()
@@ -70,23 +81,3 @@ class PixelFlash(Particle):
                     self.dot.fill(color)
                     self.color = color
                 return
-
-
-class PixelFlashSet(PixelFlash):
-
-    """ Pixel Flash Set is a set of coordinates with a synchronized flash
-        pattern """
-
-    def __init__(self, collection, points):
-
-        PixelFlash.__init__(self, collection, points[0])
-        self.points = points
-
-    def draw(self, surface):
-
-        for point in self.points:
-            self.rect.topleft = point
-            surface.blit(self.dot, self.rect)
-
-        self.increment_tick()
-        self.set_color()

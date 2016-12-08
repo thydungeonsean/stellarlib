@@ -10,6 +10,8 @@ class ColorSequence(object):
         self.clear = clear
         self.finite = finite
 
+        self.clear_color = BLACK
+
         self.sequence = self.set_sequence()
 
     def set_sequence(self):
@@ -32,7 +34,7 @@ class ColorSequence(object):
         frame = length * self.duration
 
         if self.clear:
-            finished_sequence[frame] = WHITE
+            finished_sequence[frame] = self.clear_color
             frame += 1
 
         if self.finite:
@@ -75,7 +77,48 @@ class Flicker(ColorSequence):
         seq = [
                self.base,
                self.lerp(.65),
-               self.base
+               self.base,
+               self.lerp(.5)
               ]
         return seq
 
+
+class Pulse(ColorSequence):
+
+    def __init__(self, base, duration=1, clear=True, finite=True):
+
+        ColorSequence.__init__(self, base, duration, clear, finite)
+
+    def get_raw_seq(self):
+        edge = self.base
+        core = self.lerp(.7)
+        seq = [
+               edge,
+               core,
+               core,
+               core,
+               core,
+               core,
+               edge
+              ]
+        return seq
+
+
+class Trail(ColorSequence):
+
+    def __init__(self, base, duration=1, clear=True, finite=True):
+
+        ColorSequence.__init__(self, base, duration, clear, finite)
+
+    def get_raw_seq(self):
+        trail = self.base
+        gleam = self.lerp(.7)
+        seq = [trail,
+               trail,
+               trail,
+               trail,
+               trail,
+               trail,
+               trail
+               ]
+        return seq
