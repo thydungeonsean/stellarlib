@@ -1,11 +1,13 @@
 import pygame
 from pygame.locals import *
 from constants import *
+import line
+import color.color_sequence as col_seq
 
 
 class BeamEffect(object):
 
-    def __init__(self, color):
+    def __init__(self, color, width):
         # parameters
         # width
         # splay
@@ -13,8 +15,10 @@ class BeamEffect(object):
         # core
         # pulse
 
-
         self.color = color
+        self.width = width
+
+        self.line_cluster = self.set_line_cluster()
 
         self.base_image = None
         self.base_rect = None
@@ -22,6 +26,20 @@ class BeamEffect(object):
         self.scaled_rect = None
 
         self.update = True
+
+    def set_line_cluster(self):
+
+        directions = [(-1, 0), (0, -1), (1, 0), (0, 1)]
+
+        cluster = [line.Line(col_seq.Solid(WHITE))]
+
+        for i in range(1, self.width):
+            for dx, dy in directions:
+                cluster.append(line.Line(col_seq.Flicker(BLUE), point=(dx*i, dy*i)))
+
+        cluster.reverse()
+
+        return cluster
 
     def render(self, origin, end):
 
@@ -31,7 +49,10 @@ class BeamEffect(object):
         base_origin = self.get_scaled_coord(origin)
         base_end = self.get_scaled_coord(end)
 
-        self.draw_line(base_origin, base_end, self.color, 3)
+        for line in self.line_cluster:
+            line.move_origin(base_origin)
+            line.move_end(base_end)
+            line.draw(self.base_image)
 
         self.scale_image()
 

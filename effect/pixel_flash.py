@@ -47,7 +47,7 @@ class PixelFlash(Particle):
         self.rect.topleft = self.point
 
         self.color_sequence = None
-        self.sequence = PixelFlash.blue_sweep
+        self.sequence = PixelFlash.blue_sweep  # default color sequence
         self.color = None
 
         self.set_color()

@@ -4,7 +4,7 @@ from color_effects import *
 
 class ColorSequence(object):
 
-    def __init__(self, base, duration, clear=True, finite=True):
+    def __init__(self, base, duration=1, clear=True, finite=True):
         self.base = base
         self.duration = duration
         self.clear = clear
@@ -49,6 +49,16 @@ class ColorSequence(object):
 
     def lerp(self, percent):
         return lerp_color(self.base, WHITE, percent)
+
+
+class Solid(ColorSequence):
+
+    def __init__(self, base):
+        ColorSequence.__init__(self, base, clear=False, finite=False)
+
+    def get_raw_seq(self):
+        seq = [self.base]
+        return seq
 
 
 class Gleam(ColorSequence):

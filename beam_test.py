@@ -4,13 +4,13 @@ from constants import *
 
 screen = pygame.display.get_surface()
 
-be = beam.BeamEffect(BLUE)
+be = beam.BeamEffect(BLUE, 2)
 
 def demo():
 
     mx, my = pygame.mouse.get_pos()
 
-    be.render((100, 100), (mx, my))
+    be.render((100, 100), (mx+10, my-10))
 
     be.draw(screen)
 
