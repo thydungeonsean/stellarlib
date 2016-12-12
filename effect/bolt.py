@@ -1,14 +1,14 @@
 import pixel_flash as flsh
 from constants import *
-from particle_projectile import ParticleProjectile
+from particle_animation import ParticleAnimation
 import animation_map as ani
 
 
-class Bolt(ParticleProjectile):
+class Bolt(ParticleAnimation):
 
     def __init__(self, collection, point, color, vector):
 
-        ParticleProjectile.__init__(self, collection, point, color)
+        ParticleAnimation.__init__(self, collection, point, color)
 
         self.vector = vector
 

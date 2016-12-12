@@ -4,7 +4,7 @@ from particle import Particle
 import animation_map as ani
 
 
-class ParticleProjectile(Particle):
+class ParticleAnimation(Particle):
 
     def __init__(self, collection, point, color):
 

@@ -15,7 +15,8 @@ class PixelFlash(Particle):
             'flicker': (c_seq.Flicker, (3, True, True)),
             'gleam': (c_seq.Gleam, (8, True, True)),
             'pulse': (c_seq.Pulse, (5, True, True)),
-            'trail': (c_seq.Trail, (5, True, True))
+            'trail': (c_seq.Trail, (5, True, True)),
+            'gleam_persist': (c_seq.Gleam, (6, False, True))
         }
         seq = sequences[seq_type][0]
         args = sequences[seq_type][1]

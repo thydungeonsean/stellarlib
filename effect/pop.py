@@ -1,14 +1,14 @@
 import pixel_flash as flsh
 from constants import *
-from particle_projectile import ParticleProjectile
+from particle_animation import ParticleAnimation
 import animation_map as ani
 
 
-class Pop(ParticleProjectile):
+class Pop(ParticleAnimation):
 
     def __init__(self, collection, point, color):
 
-        ParticleProjectile.__init__(self, collection, point, color)
+        ParticleAnimation.__init__(self, collection, point, color)
 
         self.ani_map = ani.AnimationMap.get_premade_animation('pop')
         self.w = self.ani_map.w
@@ -18,6 +18,6 @@ class Pop(ParticleProjectile):
 
     def get_next_pixel_flash(self, coords):
 
-        new = flsh.PixelFlash.get_instance(self.flashes, coords, self.color, 'flicker')
+        new = flsh.PixelFlash.get_instance(self.flashes, coords, self.color, 'gleam')
 
-        return new
+        self.flashes.append(new)

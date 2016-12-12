@@ -20,8 +20,7 @@ class BeamEffect(object):
 
         self.line_cluster = self.set_line_cluster()
 
-        self.base_image = None
-        self.base_rect = None
+        self.base_image, self.base_rect = self.set_base_image()
         self.scaled_image = None
         self.scaled_rect = None
 
@@ -33,18 +32,28 @@ class BeamEffect(object):
 
         cluster = [line.Line(col_seq.Solid(WHITE))]
 
-        for i in range(1, self.width):
-            for dx, dy in directions:
-                cluster.append(line.Line(col_seq.Flicker(BLUE), point=(dx*i, dy*i)))
+        i = self.width-1
+        for dx, dy in directions:
+            cluster.append(line.Line(col_seq.Flicker(BLUE, clear=False, finite=False), point=(dx*i, dy*i)))
 
         cluster.reverse()
 
         return cluster
 
+    def set_base_image(self):
+
+        screen = pygame.display.get_surface()
+        w = screen.get_width() / 2
+        h = screen.get_height() / 2
+
+        image = pygame.Surface((w, h))
+        rect = image.get_rect()
+
+        return image, rect
+
     def render(self, origin, end):
 
-        self.base_image = pygame.Surface((200, 200))
-        self.base_rect = self.base_image.get_rect()
+        self.base_image.fill(BLACK)
 
         base_origin = self.get_scaled_coord(origin)
         base_end = self.get_scaled_coord(end)

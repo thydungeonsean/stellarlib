@@ -17,8 +17,8 @@ def new_pop():
     x = (mx / 2) * 2
     y = (my / 2) * 2
 
-    # new = pop.Pop(pops, (x+10, y-10), RED)
-    new = bolt.Bolt(pops, (x+20, y-20), RED, 'vec')
+    new = pop.Pop(pops, (x+10, y-10), RED)
+    #new = bolt.Bolt(pops, (x+20, y-20), RED, 'vec')
     pops.append(new)
 
 

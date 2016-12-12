@@ -1,6 +1,9 @@
+import pixel_map
+import outline_map
+from random import choice
 
 
-class AnimationMap(object):
+class AnimationMap(pixel_map.PixelMap):
 
     pop = [[5, 0, 0, 4, 4, 0, 0, 5],
            [0, 4, 0, 3, 3, 0, 4, 0],
@@ -23,7 +26,8 @@ class AnimationMap(object):
 
     premade_key = {
         'pop': pop,
-        'bolt': bolt
+        'bolt': bolt,
+        'small_pop': small_pop
     }
 
     @classmethod
@@ -42,18 +46,44 @@ class AnimationMap(object):
 
     @classmethod
     def get_scan_outline(cls, ship):
-        return
+        base_map = ship.map  # TODO make this reference ship outline attribute
+        ani_map = cls((1, 1))
+        ani_map.load_map(base_map)
+        topleft = ani_map.get_topleft()
+        ani_map.flood_animate([topleft])
+        return ani_map
 
     @classmethod
     def get_left_sweep(cls, ship):
-        return
+        base_map = ship.map  # TODO make this reference ship outline attribute
+        ani_map = cls((1, 1))
+        ani_map.load_map(base_map)
+        ani_map.sweep_left_to_right()
+        return ani_map
 
     def __init__(self, (w, h)):
 
-        self.w = w
-        self.h = h
+        pixel_map.PixelMap.__init__(self, (w, h), colorkey=True)
 
-        self.map = [[0 for my in range(self.h)] for mx in range(self.w)]
+    # for debugging
+    def print_map(self):
+
+        for y in range(self.h):
+            line = ''
+            for x in range(self.w):
+                if self.map[x][y] == 0:
+                    new = '  '
+                elif self.map[x][y] >= 1:
+                    val = self.map[x][y]
+                    if val < 10:
+                        new = ' '
+                    else:
+                        new = ''
+                    new += str(val)
+                elif self.map[x][y] == -1:
+                    new += '  '
+                line += new
+            print line
 
     def load_premade_map(self, key):
 
@@ -65,9 +95,84 @@ class AnimationMap(object):
 
         self.w, self.h = self.get_map_dim(base_map)
 
-        self.map = []
+        self.map = [[0 for my in range(self.h)] for mx in range(self.w)]
         for y in range(self.h):
-            line = []
             for x in range(self.w):
-                line.append(base_map[x][y])
-            self.map.append(line)
+                self.map[x][y] = base_map[x][y]
+
+    def flood_animate(self, start_points, weight='complete'):
+
+        queue = start_points
+        visited = set(start_points)
+
+        step = 1
+
+        trace = {}
+
+        # TODO allow weight arg to set how far flood gets
+        while queue:
+
+            trace[step] = set()
+            for point in queue:
+                trace[step].add(point)
+                visited.add(point)
+
+            step += 1
+
+            queue = self.get_next_queue(queue, visited)
+
+        for value, step_set in trace.items():
+            self.add_points(list(step_set), value)
+
+    def get_next_queue(self, old_queue, visited):
+
+        next = set()
+
+        for point in old_queue:
+            adj = self.get_adj_line_points(point)
+            for a_point in adj:
+                if a_point not in visited:
+                    next.add(a_point)
+
+        return list(next)
+
+    def get_adj_line_points(self, point):
+
+        adj = self.get_adj(point, diag=True)
+        line = []
+
+        for ax, ay in adj:
+            if self.map[ax][ay] != 0:
+                line.append((ax, ay))
+
+        return line
+
+    def get_topleft(self):
+
+        points = []
+        for y in range(self.h):
+            for x in range(self.w):
+                if self.map[x][y] != 0:
+                    points.append((x, y))
+
+        low_point = choice(points)
+        low_val = low_point[0] + low_point[1]
+
+        for x, y in points:
+            if x+y < low_val:
+                low_val = x+y
+                low_point = (x, y)
+
+        return low_point
+
+    def sweep_left_to_right(self):
+
+        step = 1
+        start_animation = False
+        for x in range(self.w):
+            for y in range(self.h):
+                if self.map[x][y] != 0:
+                    self.map[x][y] = step
+                    start_animation = True
+            if start_animation:
+                step += 1
